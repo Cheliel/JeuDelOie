@@ -26,7 +26,6 @@
         if (parcourt.getPlateau().ContainsKey(context.getJoueurEnCour().getCaseEnCour()))
         {
             regle = $"Règle : {parcourt.getRegle().GetValueOrDefault(context.getJoueurEnCour().getCaseEnCour())}";
-
         }
         else
         {
@@ -35,7 +34,6 @@
         
         IHM.afficheRegle(regle);
 
-          
     }
 
     public static void appliqueRegle(Context context, Parcourt parcourt)
