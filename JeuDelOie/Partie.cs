@@ -1,13 +1,15 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Runtime.CompilerServices;
 
-public class Partie
+public partial class Partie
 {
     public Parcourt parcourt { get; set; }   
 
     public int tour { get; set; }
 
     public Joueur j1 { get; set; }
+
+    public Joueur j2 { get; set; }
 
     public bool estEnCourt = false;
 
@@ -16,20 +18,19 @@ public class Partie
     
 
     public Partie(Joueur J1, Joueur J2) 
-    { 
-        this.parcourt = new Parcourt();
+    {
+        this.parcourt = JeuDeLoie.parcourts[JeuDeLoie.parcourtSelectionne];
        //this.joueurs = joueurs;
         this.estEnCourt = false;
         this.tour = 0;
         this.context = new Context(J1, J2); 
         this.j1 = J1;
+        this.j2 = J2;
     }
 
     public Joueur start()
     {
         this.estEnCourt=true;
-        Console.WriteLine("Apouyez sur un Tuch pour louchoumencer");
-        Console.ReadLine();
 
         while (estEnCourt)
         {
@@ -44,32 +45,25 @@ public class Partie
             {
                 this.context.changeDeTour();
             }
-            Console.ReadLine();
-            
+
+            context.setLanceDeDes(new int[] {0,0});
         }
-
         return this.context.getJoueurEnCour();
-    }
-
-    public void stop()
-    {
-        this.estEnCourt=false;
     }
 
     public void tourDeJeu()
     {
         
         Console.Clear();
-        IHM.debutDeTourDescription(this.context);
+        IHM.affichePlateau(this.context, this.parcourt, this.j1, this.j2);
         Actions.pause();
 
-        if (Arbitre.peutJouer(this.context.getJoueurEnCour()))
+        if (Arbitre.peutJouer(this.context, this.j1))
         {
 
             if (this.context.getJoueurEnCour().estOrdinateur() || true)
             {
                 Console.Clear();
-                Console.WriteLine("Apui sur une touche pour lancer les dès");
                 this.context.setLanceDeDes(Actions.lancerDes());
                 var lancerDeDes = this.context.getLanceDeDes();
                 this.context.getJoueurEnCour().avance(lancerDeDes[0] + lancerDeDes[1]);
@@ -77,13 +71,20 @@ public class Partie
 
             }
 
-            IHM.finDeTourDescription(this.context);
-            Arbitre.lisRegle(this.context, this.parcourt);
-            Actions.pause();
-            Arbitre.appliqueRegle(this.context, this.parcourt);
-            Actions.pause();
+            //this.context.getJoueurEnCour().saut(52);
+            //this.context.setLanceDeDes(new int[] { 6, 3 });
+
+            Arbitre.verifieSwitchJoueur(this.context);
+            Arbitre.lisRegle(this.context, this.parcourt, this.j1, this.j2);
+            Arbitre.appliqueRegle(this.context, this.parcourt, this.j1,  this.j2);
+            
 
         }
+    }
+
+    public void stop()
+    {
+        this.estEnCourt = false;
     }
 }
 
