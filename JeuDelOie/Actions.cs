@@ -20,29 +20,43 @@ public static partial class Actions
         return res;
     }
 
-    public static int swtich(Joueur joueur, Joueur joueurRejoint)
+    public static void swtich(Context context)
     {
-        return 0;
+        var des = context.getLanceDeDes();
+        context.getJoueurEnAttente().saut(context.getJoueurEnAttente().getCaseEnCour() - (des[0] + des[1]));
     }
 
     public static void tourPrison(Joueur joueur)
     {
-
-        Actions.pause();
+        
         int[] resultat = lancerDes();
+        int res = resultat[0] + resultat[1];
+        pause();
+        Console.WriteLine("\t\t...");
+        pause();
+        Console.WriteLine("\t\t...");
+        pause();
+        Console.WriteLine("\t\t...");
+        Console.WriteLine();
+        pause();
 
-        if (resultat[0] + resultat[1] == (11 | 12 | 13))
+        if (res == 10 | res == 11 | res == 12)
         {
+            Console.WriteLine($"\t\tBravo ! Tu as fait {resultat[0] + resultat[1]} tu sors de prison :D");
             joueur.setPrison(false);
-            Console.WriteLine($"Dommage ! Tu as fait {resultat[0] + resultat[1]} :'(");
-            Actions.pause();
-        }
 
+        }
+        else
+        {
+            Console.WriteLine($"\t\tDommage ! Tu as fait {resultat[0] + resultat[1]} tu restes en prison :'(");
+        }
+        pause();
     }
 
     public static void pause()
     {
-        Console.Read();
+        Console.ReadKey();
+        
     }
 
 

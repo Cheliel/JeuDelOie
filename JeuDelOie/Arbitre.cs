@@ -14,29 +14,32 @@
         {   
             joueur.passeTourDePenalite();
             IHM.signalPenalite(joueur);
+            Actions.pause();
             return false;
         }
 
         return true;   
     }
 
-    public static void lisRegle(Context context, Parcourt parcourt)
+    public static void lisRegle(Context context, Parcourt parcourt, Joueur j1, Joueur j2) 
     {
-        string regle = "";
+        string? regle = null;
         if (parcourt.getPlateau().ContainsKey(context.getJoueurEnCour().getCaseEnCour()))
         {
-            regle = $"Règle : {parcourt.getRegle().GetValueOrDefault(context.getJoueurEnCour().getCaseEnCour())}";
+            regle = $"Règle => {parcourt.getRegle().GetValueOrDefault(context.getJoueurEnCour().getCaseEnCour())}";
+        }
+        
+        if(regle != null) {
+            IHM.affichePlateau(context, parcourt, j1, j2, regle);
         }
         else
         {
-            regle = $"Règle : /";
+            IHM.affichePlateau(context, parcourt, j1, j2);
         }
-        
-        IHM.afficheRegle(regle);
-
+        Actions.pause();
     }
 
-    public static void appliqueRegle(Context context, Parcourt parcourt)
+    public static void appliqueRegle(Context context, Parcourt parcourt, Joueur j1, Joueur j2)
     {   
         if (parcourt.getPlateau().ContainsKey(context.getJoueurEnCour().getCaseEnCour()))
         {
@@ -46,15 +49,21 @@
             {
                 regle(context);
 
-                //En cas de contestation - relire les règles du jeux (toute action est irrévocable)
+                //En cas de contestation - relire les règles du jeux (What is done cannot be undone !)
                 Console.Clear();
-                IHM.finDeTourDescription(context);
-                lisRegle(context, parcourt);
+                lisRegle(context, parcourt, j1, j2);
+                Actions.pause();
             }
         }
     }    
 
-
+    public static void verifieSwitchJoueur(Context context)
+    {
+        if (context.getJoueurEnCour().getCaseEnCour().Equals(context.getJoueurEnAttente().getCaseEnCour()))
+        {
+            Actions.swtich(context);
+        }
+    }
 
 }
 
