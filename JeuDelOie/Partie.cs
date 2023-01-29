@@ -71,13 +71,11 @@ public partial class Partie
 
             }
 
-            //this.context.getJoueurEnCour().saut(52);
-            //this.context.setLanceDeDes(new int[] { 6, 3 });
-
-            Arbitre.verifieSwitchJoueur(this.context);
-            Arbitre.lisRegle(this.context, this.parcourt, this.j1, this.j2);
-            Arbitre.appliqueRegle(this.context, this.parcourt, this.j1,  this.j2);
-            
+            IHM.finDeTourDescription(this.context);
+            Arbitre.lisRegle(this.context, this.parcourt);
+            Actions.pause();
+            Arbitre.appliqueRegle(this.context, this.parcourt);
+            Actions.pause();
 
         }
     }

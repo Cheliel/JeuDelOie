@@ -32,6 +32,10 @@
         if(regle != null) {
             IHM.affichePlateau(context, parcourt, j1, j2, regle);
         }
+        
+        if(regle != null) {
+            IHM.affichePlateau(context, parcourt, j1, j2, regle);
+        }
         else
         {
             IHM.affichePlateau(context, parcourt, j1, j2);
