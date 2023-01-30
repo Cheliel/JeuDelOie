@@ -14,7 +14,6 @@ public static partial class IHM
             "\t\t  |~~╚╗___________________________________________________________________╔╝~~|\n";
             
     }
-
 /*
     public static void debutDeTourDescription(Context context)
     {
@@ -35,7 +34,6 @@ public static partial class IHM
         IHM.afficheScoreDes(context.getLanceDeDes());
 
     }*/
-
     public static void signalPenalite(Context context, Joueur j1)
     {
         /* Console.Clear();
@@ -73,18 +71,15 @@ public static partial class IHM
         Console.Clear();
         Console.WriteLine();
         Console.WriteLine();
-        if (context.getJoueurEnCour() == j1)
+        if (context.getJoueurEnCour().Equals(j1))
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write($"\t\t{context.getJoueurEnCour().getPseudo()}");
-            
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"\t\t{context.getJoueurEnCour().getPseudo()}");   
         }
         else
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write($"\t\t{context.getJoueurEnCour().getPseudo()} tu est en prison ! ");
-
-
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"\t\t{context.getJoueurEnCour().getPseudo()}");
         }
         Console.ResetColor();   
         Console.Write(" tu est en prison ! ");
@@ -98,7 +93,7 @@ public static partial class IHM
         Console.WriteLine();
     }
 
-    public static String construitSingelScoreBoard(Score score)
+    public static String construitSingleScoreBoard(Score score)
     {
 
         return  $"\t\t ╔|══════════════════════════════════════════════════╦╦══════════╦════════════|╗\r\n " +
@@ -117,57 +112,50 @@ public static partial class IHM
 
     }
 
-    public static string construitScoreBoad(Score[] scores)
+    public static string construitScoreBoad(List<Score> scores)
     {
         Score score = new Score("--", 999, JeuDeLoie.parcourts[JeuDeLoie.parcourtSelectionne].getNom(), "--/--/--");
         
-        if (scores.Length == 0)
+        if (scores.Count == 0)
         {   
             
             return $"{contruitNomPlateau()}" +
-           $"{construitSingelScoreBoard(score)}" +
-           $"{construitSingelScoreBoard(score)}" +
-           $"{construitSingelScoreBoard(score)}" +
-           $"{construitSingelScoreBoard(score)}" +
-           $"{construitSingelScoreBoard(score)}";
+           $"{construitSingleScoreBoard(score)}" +
+           $"{construitSingleScoreBoard(score)}" +
+           $"{construitSingleScoreBoard(score)}" +
+           $"{construitSingleScoreBoard(score)}" +
+           $"{construitSingleScoreBoard(score)}";
         }
-        else if(scores.Length < 5)
+        else if(scores.Count < 5 )
         {
-            string afficahge = $"{contruitNomPlateau()}";
+            string affichage = $"{contruitNomPlateau()}";
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
-                if (i <= scores.Length - 1)
-                {   
-                    afficahge += construitSingelScoreBoard(scores[i]);
+                if (i <= scores.Count - 1)
+                {
+                    affichage += construitSingleScoreBoard(scores[i]);
+                    continue;
                 }
 
-                afficahge += construitSingelScoreBoard(score);
-
+                affichage += construitSingleScoreBoard(score);
             }
-            return afficahge;
+            return affichage;
 
-
-        }else if(scores.Length >= 5) { }
+        }else
         {
-            string afficahge = $"{contruitNomPlateau()}";
+            string affichage = $"{contruitNomPlateau()}";
 
-            for (int i = 0; i < scores.Length - 1; i++)
+            for (int i = 0; i < scores.Count - 1; i++)
             {
                 if (scores[i] != null)
                 {
-                    afficahge += construitSingelScoreBoard(scores[i]);
+                    affichage += construitSingleScoreBoard(scores[i]);
                 }
 
             }
-
-            return afficahge;
-
+            return affichage;
         }
-
-
-
-
     }
 
     public static void construitPlateau(Parcourt plateau, Joueur j1, Joueur j2)
@@ -321,8 +309,10 @@ public static partial class IHM
         Console.WriteLine($"\t\t\t\t\t\t\t\t\t\t        ╔══════╗ \n" +
                          $"\t\t\t\t\t\t╔═══════════════╗                       ║Entrée║ \n" +
                          $"\t\t\t\t\t\t║Nouvelle Partie║                       ╚══╗   ║ \n" +
-                         $"\t\t\t\t\t\t╚═══════════════╝                          ║   ║ \t" +
-                         $"\t\t\t\t\t\t\t\t\t\t\t\t\t           ╚═══╝");
+                         $"\t\t\t\t\t\t╚═══════════════╝                          ║   ║ \t\n" +
+                         $"\t\t\t\t\t\t\t\t\t\t           ╚═══╝");
+        
+        
     }
 
     public static void afficheDemarerPartie()
@@ -330,8 +320,8 @@ public static partial class IHM
         Console.WriteLine($"\t\t\t\t\t\t\t\t\t\t        ╔══════╗ \n" +
                          $"\t\t\t\t\t\t╔════════════════╗                      ║Entrée║ \n" +
                          $"\t\t\t\t\t\t║ Demarer Partie ║                      ╚══╗   ║ \n" +
-                         $"\t\t\t\t\t\t╚════════════════╝                         ║   ║ \t" +
-                         $"\t\t\t\t\t\t\t\t\t\t\t\t\t           ╚═══╝");
+                         $"\t\t\t\t\t\t╚════════════════╝                         ║   ║ \t\n" +
+                         $"\t\t\t\t\t\t\t\t\t\t           ╚═══╝");
     }
 
     public static void afficheJoueurs(Context context, Joueur j1, Joueur j2)
@@ -415,6 +405,7 @@ public static partial class IHM
 
     public static void affichePlateau(Context context, Parcourt plateau, Joueur j1, Joueur j2, string regle="Règle => ")
     {
+        Console.Clear();
         Console.Write(
             contruitNomPlateau()
             ); construitPlateau(plateau, j1, j2);
@@ -451,6 +442,22 @@ public static partial class IHM
                           "\t\t\t\t╚═══════════════════════════════════╝            ╚═════╝\n");
 
     }
+    public static void afficheServer()
+    {
+        Console.Clear();
+        Console.WriteLine("\n\n\n\n\n\n\n\n");
+
+        Console.WriteLine("\t\t\t\t╔═══════════════════════════════════╗            ╔═════╗\n" +
+                          "\t\t\t\t║ Connexion                         ╟────────────╢  ◄  ║\n " +
+                          "\t\t\t\t╚═══════════════════════════════════╝            ╚═════╝\n");
+
+        Console.WriteLine("\t\t\t\t╔═══════════════════════════════════╗            ╔═════╗\n" +
+                          "\t\t\t\t║ Crée un server                    ╟────────────╢  ►  ║\n " +
+                          "\t\t\t\t╚═══════════════════════════════════╝            ╚═════╝\n");
+
+        afficheEchap();
+
+    }
 
     public static void afficheEchap()
     {
@@ -474,6 +481,7 @@ public static partial class IHM
     {
         Console.Clear();
         Console.WriteLine();
+        //Console.Write(construitScoreBoad(JeuDeLoie.scoreBoard[JeuDeLoie.parcourtSelectionne]));
         Console.Write(construitScoreBoad(JeuDeLoie.scoreBoard[JeuDeLoie.parcourtSelectionne]));
         afficheChoixScoreBoard();
         afficheChoisirPseudo(positionJoueur, nomjeur);
@@ -491,16 +499,16 @@ public static partial class IHM
 
     }
 
-    public static void ecrantDeFin(Joueur vainceur)
+    public static void ecrantDeFin(Joueur vainqueur)
     {
         Console.Clear();
         Console.WriteLine("\n\n\n\n");
         Console.Write($"Félicitaion ");
         Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.Write("{vainceur.getPseudo()}");
+        Console.Write($"{vainqueur.getPseudo()}");
         Console.ResetColor();
         Console.Write("! ");
-        Console.WriteLine($"Vous avez gagner avec un score de {vainceur.getScore()}");
+        Console.WriteLine($"Vous avez gagner avec un score de {vainqueur.getScore()}");
         Console.WriteLine("\n\n");
         Console.WriteLine("\n\n░░░░░░░▀▄░░░▄▀░░░░░░░░" +
             "              \r\n░░░░░░▄█▀███▀█▄░░░░░░░" +

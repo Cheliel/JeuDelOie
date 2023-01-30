@@ -11,7 +11,10 @@ public class Score
 
     public Score()
     {
-
+        this.pseudo = "--";
+        this.score = 999;
+        this.plateau = JeuDeLoie.parcourts[JeuDeLoie.parcourtSelectionne].getNom();
+        this.date = "--/--/--";
     }
 
     public Score(string pseudo, int score, string plateau, string date)
@@ -22,7 +25,6 @@ public class Score
         this.date = date; // formatString(date);
     } 
         
-
     public string getPseudo() { return pseudo; }    
 
     public int getScore() { return score; } 

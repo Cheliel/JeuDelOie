@@ -1,5 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Net.Sockets;
+using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 public partial class Partie
 {
@@ -48,6 +51,7 @@ public partial class Partie
 
             context.setLanceDeDes(new int[] {0,0});
         }
+
         return this.context.getJoueurEnCour();
     }
 
@@ -56,27 +60,30 @@ public partial class Partie
         
         Console.Clear();
         IHM.affichePlateau(this.context, this.parcourt, this.j1, this.j2);
-        Actions.pause();
+
 
         if (Arbitre.peutJouer(this.context, this.j1))
         {
 
-            if (this.context.getJoueurEnCour().estOrdinateur() || true)
-            {
-                Console.Clear();
-                this.context.setLanceDeDes(Actions.lancerDes());
-                var lancerDeDes = this.context.getLanceDeDes();
-                this.context.getJoueurEnCour().avance(lancerDeDes[0] + lancerDeDes[1]);
-                this.context.getJoueurEnCour().setScore(lancerDeDes[0] + lancerDeDes[1]);
 
-            }
+            Actions.pause(this.context.getJoueurEnCour());
 
-            IHM.finDeTourDescription(this.context);
-            Arbitre.lisRegle(this.context, this.parcourt);
-            Actions.pause();
-            Arbitre.appliqueRegle(this.context, this.parcourt);
-            Actions.pause();
+            Console.Clear();
+            this.context.setLanceDeDes(Actions.lancerDes());
+            var lancerDeDes = this.context.getLanceDeDes();
+            this.context.getJoueurEnCour().avance(lancerDeDes[0] + lancerDeDes[1]);
+            this.context.getJoueurEnCour().setScore(lancerDeDes[0] + lancerDeDes[1]);
 
+
+            
+            Arbitre.verifieSwitchJoueur(this.context);
+            //this.context.getJoueurEnCour().saut(42);
+           // Console.WriteLine("Current case : ", this.context.getJoueurEnCour().getCaseEnCour());
+            Arbitre.lisRegle(this.context, this.parcourt, this.j1, this.j2);
+            Arbitre.appliqueRegle(this.context, this.parcourt, this.j1, this.j2);
+
+            Actions.pause(this.context.getJoueurEnCour(), false);
+       
         }
     }
 
@@ -84,5 +91,7 @@ public partial class Partie
     {
         this.estEnCourt = false;
     }
+
+
 }
 

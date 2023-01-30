@@ -1,9 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 
+using System.Net.Sockets;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System;
+using System.Collections.Specialized;
+using System.Data.Entity.ModelConfiguration.Configuration;
 
 public static class JeuDeLoie
 {
@@ -12,17 +17,22 @@ public static class JeuDeLoie
     public static Parcourt plateau3 = new Parcourt("Aurore Eternel");
     public static Parcourt plateau4 = new Parcourt("Profond Soupire");
     public static int parcourtSelectionne = 0;
-    public static List<Score[]> scoreBoard = new List<Score[]>();   
+    public static List<List<Score>> scoreBoard = new List<List<Score>>();
+    public static Server server;
+    public static TcpClient client;
 
     public static Parcourt [] parcourts = { plateau1, plateau2, plateau3, plateau4 } ;
     
-    public static void demarer()
+    public async static void demarer()
     {
         scoreBoard.Clear();
         scoreBoard = getscoreBoard();
+  
 
         while (true)
         {
+            Console.WriteLine("Je vais afficher l'ecrant d'accueil !...");
+            Console.ReadKey();
             IHM.afficheEcrantDAccueil();
 
             switch (Console.ReadKey().Key)
@@ -37,7 +47,10 @@ public static class JeuDeLoie
 
                 case ConsoleKey.Enter:
 
-                    choisirModeDeJeu();
+                    await choisirModeDeJeu();
+                    Console.WriteLine("fin choisir mode de jeu");
+                    Console.ReadKey();
+
                     break;
             }
         }
@@ -45,9 +58,9 @@ public static class JeuDeLoie
          
     }
 
-    public static List<Score[]> getscoreBoard()
+    public static List<List<Score>> getscoreBoard()
     {
-        List<Score[]> newScoreBoard = new List<Score[]>();
+        List<List<Score>> newScoreBoard = new List<List<Score>>();
         BDD BDD = new BDD();
 
         for (int i = 0; i < parcourts.Length; i++)
@@ -58,34 +71,40 @@ public static class JeuDeLoie
         return newScoreBoard;  
     }
 
-    public static void choisirModeDeJeu()
+    public async static Task<int> choisirModeDeJeu()
     {
         IHM.afficheModeDeJeu();
+        bool achoisi = false;
 
-        switch (Console.ReadKey().Key)
+        while(!achoisi) 
         {
-            case ConsoleKey.RightArrow:
-                modeSolo();
-                break;
+            switch (Console.ReadKey().Key)
+            {
+                case ConsoleKey.RightArrow:
+                    modeMultiJoueur();
+                    break;
 
-            case ConsoleKey.LeftArrow:
-                modeSolo();
-                break;
+                case ConsoleKey.LeftArrow:
+                    modeSolo();
+                    break;
 
-            case ConsoleKey.UpArrow:
-                modeSolo();
-                break;
+                case ConsoleKey.UpArrow:
+                    await Task.Run(() => modeEnLigne());
+                    break;
 
-            default:
-                choisirModeDeJeu();
-                break;
+                default:
+                    await choisirModeDeJeu();
+                    break;
+            }
         }
+
+        return 0;
     }
 
-    public static void modeSolo()
+    public static void modeMultiJoueur()
     {
         Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
-        Joueur j2 = new Joueur(choisirPseudo("Joueur 2"), true);
+        Joueur j2 = new Joueur(choisirPseudo("Joueur 2"), false);
 
         Parcourt plateau = choisirPlateau();
 
@@ -94,13 +113,153 @@ public static class JeuDeLoie
         Joueur vainceur = partie.start();
         IHM.ecrantDeFin(vainceur);
 
-        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), DateTime.Now.ToString());
+        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
         BDD BDD = new BDD();
         BDD.insertScore(score);
 
         Console.ReadKey();
         demarer();
 
+    }
+
+    public static void modeSolo()
+    {
+        Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
+        Joueur j2 = new Joueur("Ordinateur", true);
+
+        Parcourt plateau = choisirPlateau();
+
+        Partie partie = new Partie(j1, j2);
+
+        Joueur vainceur = partie.start();
+        IHM.ecrantDeFin(vainceur);
+
+        if (!vainceur.estOrdinateur())
+        {
+            Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
+            BDD BDD = new BDD();
+            BDD.insertScore(score);
+        }
+        
+
+        Console.ReadKey();
+        demarer();
+
+    }
+
+    public async static void modeEnLigne() 
+    {
+        IHM.afficheServer();
+        Console.WriteLine("before switch mode en ligne");
+        bool taskEnd = false;
+
+        while (!taskEnd)
+        {
+            switch (Console.ReadKey().Key)
+            {
+                case ConsoleKey.RightArrow:
+                    await startServer();
+                    Console.ReadKey();
+                    break;
+
+                case ConsoleKey.LeftArrow:
+                    taskEnd = await TCPClient();
+                    Console.WriteLine("outta TCPCLient");
+                    Console.ReadKey();
+  
+                    break;
+
+                case ConsoleKey.Escape:
+                    demarer();
+                    Console.WriteLine("after escpae in mode en ligne");
+                    break;
+
+                default:
+                    modeEnLigne();
+                    Console.WriteLine("after default in mode en ligne");
+                    break;
+            }
+            Console.WriteLine("outta swith modeEnLigne");
+            Console.ReadKey();
+        }
+
+    }
+
+    public static async Task<bool> TCPClient()
+    {
+        Console.WriteLine("Connecting...");
+        const int REMOTE_PORT = 11000;
+        var remoteIP = IPAddress.Parse("127.0.0.1");
+        var ep = new IPEndPoint(remoteIP, REMOTE_PORT);
+
+
+       // var entry = choisirPseudo("Joueur 2");
+        var entry = Console.ReadLine();
+        //IHM.afficheEcrantChoixPlateau();
+        client = new TcpClient();
+        await client.ConnectAsync(ep);
+        await using var stream = client.GetStream();
+        int count = 0; 
+
+        client.SendTimeout = 60 * 1000; 
+        client.ReceiveTimeout= 60 * 1000;
+        stream.Socket.ReceiveTimeout = 60 * 1000;
+        stream.Socket.SendTimeout= 60 * 1000;
+
+        while (stream.CanRead)
+        {
+            
+            byte[] buffer = new byte[1024];
+            //var data = Encoding.UTF8.GetBytes(entry.KeyChar.ToString());
+            var data = Encoding.UTF8.GetBytes(entry);
+
+            await stream.WriteAsync(data, 0, data.Length);
+            await stream.FlushAsync();
+            Console.WriteLine(entry);
+
+            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+            string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            Console.WriteLine($"Message from server: {message}");
+
+            //choisirPseudo("Joueur 2");
+            
+            entry = Console.ReadLine();
+            count ++;
+            Console.WriteLine("wilhe count : " + count + 1);
+
+        }
+        return true;
+        Console.WriteLine("Quitting");
+        Console.ReadKey();
+        
+    }
+
+    public static string? nouvelleAction()
+    {
+        return Console.ReadLine();
+    }
+
+    public static async Task<bool> startServer()
+    {
+        var srv = new Server();
+        srv.MessageReceived += Srv_MessageReceived;
+
+        void Srv_MessageReceived(object? sender, MessageReceivedEventArgs e)
+        {
+            var msg = Encoding.UTF8.GetString(e.RawData);
+            Console.WriteLine($"Received from {e.ClientEndPoint}");
+            Console.WriteLine(msg);
+        }
+
+        await srv.StartAsync();
+
+        Console.ReadLine();
+
+        Console.WriteLine("Arret du serveur");
+        srv.Stop();
+
+        Console.ReadLine();
+        return true;
     }
 
     public static string choisirPseudo(string JoueurUnOuDeux)
@@ -198,7 +357,7 @@ public static class JeuDeLoie
 
     public static void incrementeParcourtSelectionne() {
 
-        if( !(parcourtSelectionne == parcourts.Length -1))
+        if(!(parcourtSelectionne == parcourts.Length -1))
             parcourtSelectionne += 1; 
     }
 
@@ -210,5 +369,3 @@ public static class JeuDeLoie
     }
 
 }
-
-

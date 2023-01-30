@@ -20,7 +20,7 @@ public static partial class Actions
         return res;
     }
 
-    public static void swtich(Context context)
+    public static void echangejoueur(Context context)
     {
         var des = context.getLanceDeDes();
          context.getJoueurEnAttente().saut(context.getJoueurEnAttente().getCaseEnCour() - (des[0] + des[1]));
@@ -31,14 +31,14 @@ public static partial class Actions
         
         int[] resultat = lancerDes();
         int res = resultat[0] + resultat[1];
-        pause();
+        pause(joueur);
         Console.WriteLine("\t\t...");
-        pause();
+        pause(joueur);
         Console.WriteLine("\t\t...");
-        pause();
+        pause(joueur);
         Console.WriteLine("\t\t...");
         Console.WriteLine();
-        pause();
+        pause(joueur);
 
         if (res == 10 | res == 11 | res == 12)
         {
@@ -50,12 +50,15 @@ public static partial class Actions
         {
             Console.WriteLine($"\t\tDommage ! Tu as fait {resultat[0] + resultat[1]} tu restes en prison :'(");
         }
-        pause();
+        pause(joueur, true);
     }
 
-    public static void pause()
+    public static void pause(Joueur joueur, bool stopOrdi = true)
     {
-        Console.ReadKey();
+        if (!(joueur.estOrdinateur()) || joueur.estOrdinateur() && !stopOrdi)
+        {
+            Console.ReadKey();
+        }
         
     }
 
