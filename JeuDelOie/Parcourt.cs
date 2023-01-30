@@ -77,7 +77,7 @@ public class Parcourt
 
             if (context.getLanceDeDes().Contains(5) && context.getLanceDeDes().Contains(4))
             {
-                context.getJoueurEnCour().saut(55);
+                context.getJoueurEnCour().saut(53);
             }
         }
 

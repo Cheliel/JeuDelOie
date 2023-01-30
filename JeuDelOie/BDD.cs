@@ -95,16 +95,15 @@ public partial class BDD
         }
     }
 
-
-
-    public Score[] getScore(string plateau, int limit=5)
+    public List<Score> getScore(string plateau, int limit=5)
     {
         using (SQLiteConnection connection = getConnexion())
         {
             connection.Open();
-            Score[] result;
+            List<Score> scores = new List<Score>();
+            //Score[] result;
 
-            string selectSQL = "SELECT pseudo, score, plateau, date FROM scoreboard WHERE plateau = @plateau ORDER BY score DESC LIMIT @limit";
+            string selectSQL = "SELECT pseudo, score, plateau, date FROM scoreboard WHERE plateau = @plateau ORDER BY score LIMIT @limit";
 
             using (SQLiteCommand selectCommand = new SQLiteCommand(selectSQL, connection))
             {
@@ -113,22 +112,29 @@ public partial class BDD
                 // Exécution de la commande pour récupérer les résultats
                 using (SQLiteDataReader reader = selectCommand.ExecuteReader())
                 {
-                    result = new Score[reader.StepCount];
+                   
                     int i = 0;
                     while (reader.Read())
                     {
-                        result[i] = new Score();
-                        result[i].pseudo = reader.GetString(0);
-                        result[i].score = reader.GetInt32(1);
-                        result[i].plateau= reader.GetString(2);
-                        result[i].date = reader.GetString(3);
-
+                        scores.Add(new Score(
+                           reader.GetString(0),
+                           reader.GetInt32(1),
+                           reader.GetString(2),
+                           reader.GetString(3)
+                            ));
+//                        result[i].pseudo = reader.GetString(0);
+//                        result[i].score = reader.GetInt32(1);
+//                        result[i].plateau= reader.GetString(2);
+//                        result[i].date = reader.GetString(3);
                         i++;
                     }
+
+                   // result = new Score[scores.Count];
+
                 }
                 connection.Close();
             }
-            return result;
+            return scores;
         }
     }
 

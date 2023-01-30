@@ -12,7 +12,7 @@ public static class JeuDeLoie
     public static Parcourt plateau3 = new Parcourt("Aurore Eternel");
     public static Parcourt plateau4 = new Parcourt("Profond Soupire");
     public static int parcourtSelectionne = 0;
-    public static List<Score[]> scoreBoard = new List<Score[]>();   
+    public static List<List<Score>> scoreBoard = new List<List<Score>>();   
 
     public static Parcourt [] parcourts = { plateau1, plateau2, plateau3, plateau4 } ;
     
@@ -45,9 +45,9 @@ public static class JeuDeLoie
          
     }
 
-    public static List<Score[]> getscoreBoard()
+    public static List<List<Score>> getscoreBoard()
     {
-        List<Score[]> newScoreBoard = new List<Score[]>();
+        List<List<Score>> newScoreBoard = new List<List<Score>>();
         BDD BDD = new BDD();
 
         for (int i = 0; i < parcourts.Length; i++)
@@ -65,7 +65,7 @@ public static class JeuDeLoie
         switch (Console.ReadKey().Key)
         {
             case ConsoleKey.RightArrow:
-                modeSolo();
+                modeMultiJoueur();
                 break;
 
             case ConsoleKey.LeftArrow:
@@ -82,10 +82,10 @@ public static class JeuDeLoie
         }
     }
 
-    public static void modeSolo()
+    public static void modeMultiJoueur()
     {
         Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
-        Joueur j2 = new Joueur(choisirPseudo("Joueur 2"), true);
+        Joueur j2 = new Joueur(choisirPseudo("Joueur 2"), false);
 
         Parcourt plateau = choisirPlateau();
 
@@ -94,7 +94,28 @@ public static class JeuDeLoie
         Joueur vainceur = partie.start();
         IHM.ecrantDeFin(vainceur);
 
-        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), DateTime.Now.ToString());
+        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
+        BDD BDD = new BDD();
+        BDD.insertScore(score);
+
+        Console.ReadKey();
+        demarer();
+
+    }
+
+    public static void modeSolo()
+    {
+        Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
+        Joueur j2 = new Joueur("Ordinateur", true);
+
+        Parcourt plateau = choisirPlateau();
+
+        Partie partie = new Partie(j1, j2);
+
+        Joueur vainceur = partie.start();
+        IHM.ecrantDeFin(vainceur);
+
+        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
         BDD BDD = new BDD();
         BDD.insertScore(score);
 

@@ -1,11 +1,11 @@
 ﻿ public static class Arbitre
 {
 
-    public static bool peutJouer(Context context, Joueur j1)
+    public static bool peutJouer(Context context, Joueur joueur)
     {
         if (context.getJoueurEnCour().getPrison())
         {   
-            IHM.signalPrison(context, j1);   
+            IHM.signalPrison(context, joueur);   
             Actions.tourPrison(context.getJoueurEnCour());
             return false;
         }
@@ -13,13 +13,14 @@
         if(context.getJoueurEnCour().getTourDePenalite() > 0)
         {
             context.getJoueurEnCour().passeTourDePenalite();
-            IHM.signalPenalite(context, j1);
-            Actions.pause();
+            IHM.signalPenalite(context, joueur);
+            Actions.pause(context.getJoueurEnCour());
             return false;
         }
 
         return true;   
     }
+
 
     public static void lisRegle(Context context, Parcourt parcourt, Joueur j1, Joueur j2) 
     {
@@ -32,15 +33,10 @@
         if(regle != null) {
             IHM.affichePlateau(context, parcourt, j1, j2, regle);
         }
-        
-        if(regle != null) {
-            IHM.affichePlateau(context, parcourt, j1, j2, regle);
-        }
         else
         {
             IHM.affichePlateau(context, parcourt, j1, j2);
         }
-        Actions.pause();
     }
 
     public static void appliqueRegle(Context context, Parcourt parcourt, Joueur j1, Joueur j2)
@@ -56,7 +52,6 @@
                 //En cas de contestation - relire les règles du jeux (What is done cannot be undone !)
                 Console.Clear();
                 lisRegle(context, parcourt, j1, j2);
-                Actions.pause();
             }
         }
     }    
@@ -65,7 +60,7 @@
     {
         if (context.getJoueurEnCour().getCaseEnCour().Equals(context.getJoueurEnAttente().getCaseEnCour()))
         {
-            Actions.swtich(context);
+            Actions.echangejoueur(context);
             IHM.construitRegle($"Vous changez votre place avec le joueur {context.getJoueurEnAttente().getPseudo()}");
         }
     }

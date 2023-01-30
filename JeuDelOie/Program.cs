@@ -2,9 +2,9 @@
 using System.Reflection.Metadata;
 
 Console.Title = "Jeu de L'Oie";
-Console.SetWindowSize(115, 35);
+//Console.SetWindowSize(115, 35);
 BDD BDD = new BDD();
-BDD.supprTable("scoreboard");
+//BDD.supprTable("scoreboard");
 BDD.initalisation();
 
 JeuDeLoie.demarer();
