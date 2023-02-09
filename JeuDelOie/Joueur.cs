@@ -1,4 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿/// <summary>
+/// Contient les informations et les actions relative à un joueur
+/// </summary>
 public class Joueur
 {
     private string pseudo;
@@ -11,6 +13,9 @@ public class Joueur
 
     private bool ordinateur;
 
+    /// <summary>
+    /// Un tour de pénalité représente un tour où le joueur ne peux pas jouer
+    /// </summary>
     private int toursDePenalite; 
 
     public Joueur(string pseudo, bool estOrdinateur)
@@ -23,17 +28,23 @@ public class Joueur
         this.toursDePenalite = 0;
     }   
 
-    public void saut(int caseEnCour)
+    /// <summary>
+    /// Envoie le joueur sur une case spécifique du tableau
+    /// </summary>
+    /// <param name="nouvelleCaseEnCour"></param>
+    public void saut(int nouvelleCaseEnCour)
     {
-        this.caseEnCour = caseEnCour;
+        this.caseEnCour = nouvelleCaseEnCour;
     }
 
+    /// <summary>
+    /// Incrémente la position du joueur sur le plateau 
+    /// </summary>
+    /// <param name="scoreDesDés"></param>
     public void avance(int scoreDesDés)
     {
         this.caseEnCour += scoreDesDés;
     }
-
-    public int getScore() { return this.score; }
 
     public void ajouteToursDePenalite(int tourDePenalite)
     {
@@ -41,6 +52,8 @@ public class Joueur
     }
 
     public void passeTourDePenalite() { this.toursDePenalite -= 1; }
+
+    public int getScore() { return this.score; }
 
     public int getTourDePenalite() { return this.toursDePenalite;}
 

@@ -10,16 +10,21 @@ public partial class BDD
 
     }
 
-
+    /// <summary>
+    /// Ouvre la connexion à la BDD
+    /// </summary>
+    /// <returns></returns>
     private SQLiteConnection getConnexion()
     {
         return new SQLiteConnection("Data Source= " +
       " database.db; Version = 3; New = True; Compress = True; ");
     }
 
+    /// <summary>
+    /// Crée le fichier de BDD si il n'existe pas déjà
+    /// </summary>
     public void initalisation()
     {
-        Console.WriteLine("tring to initializer BDD");
 
         using (SQLiteConnection connection = getConnexion())
         {
@@ -40,8 +45,8 @@ public partial class BDD
                         string createTableSQL = "CREATE TABLE scoreboard (id INTEGER PRIMARY KEY, " +
                                                                            " pseudo TEXT, " +
                                                                            " score INTEGER, " +
-                                                                           " plateau TEXT, " + 
-                                                                           " date TEXT)";
+                                                                           " plateau TEXT, " +
+                                                                           " date DATETIME)";
 
                         // Création de la commande SQLite à partir de la commande SQL
                         using (SQLiteCommand createCommand = new SQLiteCommand(createTableSQL, connection))
@@ -49,17 +54,8 @@ public partial class BDD
                             // Exécution de la commande pour créer la table
                             createCommand.ExecuteNonQuery();
 
-                            Score score = new Score("--", 999, "Terre Brulée", "--/--/--");
-                            Score score1 = new Score("--", 999, "Aurore Eternel", "--/--/--");
-                            Score score2 = new Score("--", 999, "Someil des Dieux", "--/--/--");
-                            Score score3 = new Score("--", 999, "Profond Soupire", "--/--/--");
-                            
-                            this.insertScore(score);
-                            this.insertScore(score1);
-                            this.insertScore(score2);
-                            this.insertScore(score3);
 
-                            Console.WriteLine("Initialisation de la BDD réussi appyer sur une touche pour continuer");
+                            Console.WriteLine("Initialisation de la BDD réussi appuyer sur une touche pour continuer");
                             Console.ReadKey();
                         }
                     }
@@ -72,6 +68,10 @@ public partial class BDD
         }
     }
 
+    /// <summary>
+    /// Enregistre le score d'une partie dans la BDD
+    /// </summary>
+    /// <param name="score"></param>
     public void insertScore(Score score) 
     {
         using (SQLiteConnection connection = getConnexion())
@@ -95,13 +95,20 @@ public partial class BDD
         }
     }
 
+    /// <summary>
+    /// Renvoie pour un plateau donnée
+    /// La liste des 5 meilleurs score enregistrée
+    /// </summary>
+    /// <param name="plateau"></param>
+    /// <param name="limit"></param>
+    /// <returns></returns>
     public List<Score> getScore(string plateau, int limit=5)
     {
         using (SQLiteConnection connection = getConnexion())
         {
             connection.Open();
             List<Score> scores = new List<Score>();
-            //Score[] result;
+
 
             string selectSQL = "SELECT pseudo, score, plateau, date FROM scoreboard WHERE plateau = @plateau ORDER BY score LIMIT @limit";
 
@@ -109,6 +116,7 @@ public partial class BDD
             {
                 selectCommand.Parameters.AddWithValue("@plateau", plateau);
                 selectCommand.Parameters.AddWithValue("@limit", limit);
+
                 // Exécution de la commande pour récupérer les résultats
                 using (SQLiteDataReader reader = selectCommand.ExecuteReader())
                 {
@@ -120,16 +128,10 @@ public partial class BDD
                            reader.GetString(0),
                            reader.GetInt32(1),
                            reader.GetString(2),
-                           reader.GetString(3)
+                           reader.GetDateTime(3)
                             ));
-//                        result[i].pseudo = reader.GetString(0);
-//                        result[i].score = reader.GetInt32(1);
-//                        result[i].plateau= reader.GetString(2);
-//                        result[i].date = reader.GetString(3);
                         i++;
                     }
-
-                   // result = new Score[scores.Count];
 
                 }
                 connection.Close();
@@ -138,6 +140,10 @@ public partial class BDD
         }
     }
 
+    /// <summary>
+    /// Supprime une table de la BDD à partir de son nom
+    /// </summary>
+    /// <param name="tableName"></param>
     public void supprTable(string tableName)
     {
         using (SQLiteConnection connection = getConnexion())

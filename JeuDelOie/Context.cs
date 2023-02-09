@@ -1,4 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿
+/// <summary>
+/// La class context contient les informations général relative à un tour de jeu
+/// </summary>
 public class Context
 {
     Joueur joueurEnCour;
@@ -17,6 +20,10 @@ public class Context
         this.lanceDeDes = new int[] { 0, 0 };
     }
     
+    /// <summary>
+    ///  Cette fonction fait le liens entre J1 & J2 
+    ///  Et le joueur en cours
+    /// </summary>
     public void changeDeTour()
     {
         var J2 = this.joueurEnCour;

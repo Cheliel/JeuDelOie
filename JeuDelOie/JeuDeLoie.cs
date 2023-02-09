@@ -1,25 +1,39 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
+/// <summary>
+/// La Class JeuDeLoie contient la logique general de l'application : 
+/// > affichage des score boards 
+/// > création de partie : 
+/// > > choix du mode de jeu 
+/// > > choix des pseudo
+/// > > choix du plateau
+/// > Enregistre le score du gagnant 
+/// </summary>
 public static class JeuDeLoie
+
 {
-    public static Parcourt plateau1 = new Parcourt();
-    public static Parcourt plateau2 = new Parcourt("Someil des Dieux");
-    public static Parcourt plateau3 = new Parcourt("Aurore Eternel");
-    public static Parcourt plateau4 = new Parcourt("Profond Soupire");
+
+    public static Parcourt plateau1 = new Parcourt(Parcourt.Plateaux.TerreBrulee);
+    public static Parcourt plateau2 = new Parcourt(Parcourt.Plateaux.SommeilDesDieux);
+    public static Parcourt plateau3 = new Parcourt(Parcourt.Plateaux.AuroreEternel);
+    public static Parcourt plateau4 = new Parcourt(Parcourt.Plateaux.ProfondSoupir);
     public static int parcourtSelectionne = 0;
     public static List<List<Score>> scoreBoard = new List<List<Score>>();   
 
     public static Parcourt [] parcourts = { plateau1, plateau2, plateau3, plateau4 } ;
     
+    /// <summary>
+    /// Renvoie la page principale de l'application
+    /// </summary>
     public static void demarer()
     {
         scoreBoard.Clear();
         scoreBoard = getscoreBoard();
+
+        IHM.OieDeDebut();
+        Console.ReadKey();
 
         while (true)
         {
@@ -45,6 +59,12 @@ public static class JeuDeLoie
          
     }
 
+    /// <summary>
+    /// Charge les 5 meilleurs scores enregistrée sur chaque plateau
+    /// Revnoie une List par plateau 
+    /// Chaque List contient les 5 meilleurs joueurs 
+    /// </summary>
+    /// <returns></returns>
     public static List<List<Score>> getscoreBoard()
     {
         List<List<Score>> newScoreBoard = new List<List<Score>>();
@@ -58,6 +78,9 @@ public static class JeuDeLoie
         return newScoreBoard;  
     }
 
+    /// <summary>
+    /// Renvoie la page de choix du mode de jeu 
+    /// </summary>
     public static void choisirModeDeJeu()
     {
         IHM.afficheModeDeJeu();
@@ -82,6 +105,13 @@ public static class JeuDeLoie
         }
     }
 
+    /// <summary>
+    /// Contient la logique pour la création d'un partie à deux joueurs
+    /// > choix du pseudo pour le joueur 1
+    /// > choix du pseudo pour le joueur 2
+    /// > choix du plateau 
+    /// > lance la partie
+    /// </summary>
     public static void modeMultiJoueur()
     {
         Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
@@ -94,7 +124,7 @@ public static class JeuDeLoie
         Joueur vainceur = partie.start();
         IHM.ecrantDeFin(vainceur);
 
-        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
+        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), DateTime.Now);
         BDD BDD = new BDD();
         BDD.insertScore(score);
 
@@ -103,6 +133,12 @@ public static class JeuDeLoie
 
     }
 
+    /// <summary>
+    /// Contient la logique pour la création d'un partie contre un ordinateur
+    /// > choix du pseudo pour le joueur 1
+    /// > choix du plateau 
+    /// > lance la partie
+    /// </summary>
     public static void modeSolo()
     {
         Joueur j1 = new Joueur(choisirPseudo("Joueur 1"), false);
@@ -115,15 +151,23 @@ public static class JeuDeLoie
         Joueur vainceur = partie.start();
         IHM.ecrantDeFin(vainceur);
 
-        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), "--/--/--");
+        if (!vainceur.estOrdinateur())
+        {
+        Score score = new Score(vainceur.getPseudo(), vainceur.getScore(), plateau.getNom(), DateTime.Now);
         BDD BDD = new BDD();
         BDD.insertScore(score);
+        }
 
         Console.ReadKey();
         demarer();
 
     }
 
+    /// <summary>
+    /// Renvoie la page pour choisir le pseudo d'un Joueur
+    /// </summary>
+    /// <param name="JoueurUnOuDeux"></param>
+    /// <returns></returns>
     public static string choisirPseudo(string JoueurUnOuDeux)
 
     {
@@ -183,6 +227,10 @@ public static class JeuDeLoie
 
     }
 
+    /// <summary>
+    /// Renvoie la page pour choisir le plateau de jeu
+    /// </summary>
+    /// <returns></returns>
     public static Parcourt choisirPlateau()
     {
         bool aChoisi = false;
@@ -217,12 +265,20 @@ public static class JeuDeLoie
 
     }
 
+    /// <summary>
+    /// Activer par la touche -> du calvier 
+    /// Passe au plateau suivant 
+    /// </summary>
     public static void incrementeParcourtSelectionne() {
 
         if( !(parcourtSelectionne == parcourts.Length -1))
             parcourtSelectionne += 1; 
     }
 
+    /// <summary>
+    /// Activer par la touche <- du calvier 
+    /// Passe au plateau précédent 
+    /// </summary>
     public static void decrementeParcourtSelectionne()
     {
 

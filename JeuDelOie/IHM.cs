@@ -14,31 +14,10 @@ public static partial class IHM
             "\t\t  |~~╚╗___________________________________________________________________╔╝~~|\n";
             
     }
-/*
-    public static void debutDeTourDescription(Context context)
-    {
-        Console.Clear();
-        Console.WriteLine($"Tour de : {context.getJoueurEnCour().getPseudo()}");
-        Console.WriteLine($"Score : {context.getJoueurEnCour().getScore()}");
-        Console.WriteLine($"Case : {context.getJoueurEnCour().getCaseEnCour()}");
-        
 
-    }
-
-    public static void finDeTourDescription(Context context)
-    {
-        Console.Clear();
-        Console.WriteLine($"Tour de : {context.getJoueurEnCour().getPseudo()}");
-        Console.WriteLine($"Score : {context.getJoueurEnCour().getScore()}");
-        Console.WriteLine($"Case : {context.getJoueurEnCour().getCaseEnCour()}");
-        IHM.afficheScoreDes(context.getLanceDeDes());
-
-    }*/
     public static void signalPenalite(Context context, Joueur j1)
     {
-        /* Console.Clear();
-         Console.WriteLine($"{joueur.getPseudo()} tu ne peux pas jouer il te reste {joueur.getTourDePenalite()+1} de penalité ! :(");
-         */
+ 
 
         Console.Clear();
         Console.WriteLine();
@@ -97,7 +76,7 @@ public static partial class IHM
     {
 
         return  $"\t\t ╔|══════════════════════════════════════════════════╦╦══════════╦════════════|╗\r\n " +
-                $"\t\t ║| {score.getPseudo().PadRight(35)}              ║║   {score.getScore().ToString().PadRight(3)}    ║  {score.getDate().PadRight(8)}  |║\r\n " +
+                $"\t\t ║| {score.getPseudo().PadRight(35)}              ║║   {score.getScore().ToString().PadRight(3)}    ║  {score.formatDatePourAffichage().PadRight(8)}  |║\r\n " +
                 $"\t\t ╚|══════════════════════════════════════════════════╩╩══════════╩════════════|╝\n";
     }
 
@@ -114,7 +93,7 @@ public static partial class IHM
 
     public static string construitScoreBoad(List<Score> scores)
     {
-        Score score = new Score("--", 999, JeuDeLoie.parcourts[JeuDeLoie.parcourtSelectionne].getNom(), "--/--/--");
+        Score score = new Score();
         
         if (scores.Count == 0)
         {   
@@ -262,19 +241,7 @@ public static partial class IHM
                                 "\t\t  |~~\\~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/~~|\n");
     }
 
-    public static void afficheScoreDes(int[] lancerDes)
-    {
-/*        Console.WriteLine($"Dés : ");
-        Console.ForegroundColor= ConsoleColor.Yellow;
-        Console.Write(lancerDes[0]);
-        Console.ResetColor();
-        Console.Write("-");
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.Write(lancerDes[1]);
-        Console.ResetColor();*/
-        Console.WriteLine($"Dés : {lancerDes[0]} - {lancerDes[1]}");
-    }
-
+ 
     public static void afficheEchapEtSuppr()
     {
         Console.WriteLine("\t\t╔═════╗  \t\t\t\t\t\t\t     ╔════════╗ \r\n" +
@@ -500,6 +467,44 @@ public static partial class IHM
             "              \r\n░░░░░█░█▀▀▀▀▀█░█░░░░░░" +
             "              \r\n░░░░░░░░▀▀░▀▀░░░░░░░░░");
 
+    }
+
+    public static void OieDeDebut()
+    {
+        Console.Clear();
+        Console.WriteLine("\n\n");
+        Console.WriteLine("\t\t\t\t\t                          ...                 \r\n" +
+            "\t\t                                               .7??YJJ?^..            \r\n" +
+            "\t\t                                              !5!.:J^ 7&???7!^.       \r\n" +
+            "\t\t   ╔═══════════════════════════╗               ^B.     .?#^^~7JPY       \r\n" +
+            "\t\t   ║       Jeu De l'Oie        ║             JP    :JJ?77!~~^:.       \r\n" +
+            "\t\t   ║                           ║             YP   ^P!                 \r\n" +
+            "\t\t   ║ Correcteur - Tarik Ouhali ║             YP   G7                  \r\n" +
+            "\t\t   ╚═══════════════════════════╝             PJ   B!                  \r\n" +
+            "\t\t                                             G7   B!                  \r\n" +
+            "\t\t                                             G7   B!                  \r\n" +
+            "\t\t                                             G~   B7                  \r\n" +
+            "\t\t                                            :B.   55                  \r\n" +
+            "\t\t                                           ^P!    ^#:                 \r\n" +
+            "\t\t                                  ..:::^~7JJ^      PJ                 \r\n" +
+            "\t\t                        .:^~77?JJ????77!~^.        ~#.                \r\n" +
+            "\t\t                   .^!?JYJ?7~^:..                   B?                \r\n" +
+            "\t\t               :~?JYJ!^.                            JP                \r\n" +
+            "\t\t           :~?YY7^.                                 7B                \r\n" +
+            "\t\t:..   :^!?YY7^.                                     7B                \r\n" +
+            "\t\t?JYBPYJ7~^.     .^~            ..                   YP                \r\n" +
+            "\t\t   ?YJ??77?J55YY55?~!?Y:  .:~7JY!                  :#~                \r\n" +
+            "\t\tJJ?777?JJ?!7JJJ??J##5YJ?JJJ?7~:                   ~G7                 \r\n" +
+            "\t\t .:^^^^^^~?Y?^    :^^:::.                      .!Y5^    ╔═══════════════════╗            \r\n" +
+            "\t\t            ^?JJ!:                        .:~?YY7^      ║ Etienne Pernon    ║       \r\n" +
+            "\t\t               :!?JJ7!^:..          :7J?JJJ?7~:         ║ CCI Campus : M2II ║          \r\n" +
+            "\t\t                   .^!7?JJJ5.     ~G#&?...              ╚═══════════════════╝       \r\n" +
+            "\t\t                          .JY!^^!JG@J#.                               \r\n" +
+            "\t\t                            .J#?&^ 5YG?                               \r\n" +
+            "\t\t                             ^#~#.  #YB!^^~^~~^.                      \r\n" +
+            "\t\t                             ~B:#^.JG~^??7!PB5J:                      \r\n" +
+            "\t\t                            .!5G?^?JY#GGP?J?J#J                       \r\n" +
+            "\t\t                            .5G5?7?YJ^.J##^ .::^.  ");
     }
 }
 
