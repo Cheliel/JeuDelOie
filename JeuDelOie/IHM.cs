@@ -6,7 +6,6 @@ public static partial class IHM
 {
     public static string construitRegle(string regle)
     {
-        //gérer le cas des règle plus longue que 60 
 
         return
             "\t\t  |~~╔═════════════════════════════════════════════════════════════════════╗~~|\n" +

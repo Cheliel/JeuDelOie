@@ -88,7 +88,7 @@ public partial class Partie
             this.context.getJoueurEnCour().setScore(lancerDeDes[0] + lancerDeDes[1]);
 
 
-            //this.context.getJoueurEnCour().saut(52);
+            
             Arbitre.verifieSwitchJoueur(this.context);
             Arbitre.lisRegle(this.context, this.parcourt, this.j1, this.j2);
             Arbitre.appliqueRegle(this.context, this.parcourt, this.j1, this.j2);

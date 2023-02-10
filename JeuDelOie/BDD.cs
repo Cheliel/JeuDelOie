@@ -124,7 +124,7 @@ public partial class BDD
                     int i = 0;
                     while (reader.Read())
                     {
-                        scores.Add(new Score(
+                            scores.Add(new Score(
                            reader.GetString(0),
                            reader.GetInt32(1),
                            reader.GetString(2),

@@ -110,6 +110,7 @@ public class Parcourt
 
     /// <summary>
     /// List les règles et les actions liées aux cases spéciales d'un plateau définie
+    /// Chaque action ou règle est référencé lie à une case du plateau par sa clef : int 
     /// </summary>
 
     private void initialiseRegle_TerreBrulee()
